@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SAFIRA - Dashboard</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="sidebar-logo">◆ SAFIRA</div>
+        <div class="sidebar-subtitle">Do Alvorecer</div>
+        
+        <ul class="sidebar-menu">
+            <li>
+                <a href="index.html" class="ativo">
+                    <span>🏠</span>
+                    Home
+                </a>
+            </li>
+            <li>
+                <a href="modulos/estoque.html">
+                    <span>📦</span>
+                    Estoque
+                </a>
+            </li>
+            <li>
+                <a href="modulos/clientes.html">
+                    <span>👥</span>
+                    Clientes
+                </a>
+            </li>
+            <li>
+                <a href="modulos/vendas.html">
+                    <span>🛒</span>
+                    Vendas
+                </a>
+            </li>
+            <li>
+                <a href="modulos/servicos.html">
+                    <span>🔧</span>
+                    Serviços
+                </a>
+            </li>
+            <li>
+                <a href="modulos/financeiro.html">
+                    <span>💰</span>
+                    Financeiro
+                </a>
+            </li>
+            <li>
+                <a href="modulos/relatorios.html">
+                    <span>📊</span>
+                    Relatórios
+                </a>
+            </li>
+        </ul>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+        <!-- HEADER -->
+        <header class="header">
+            <div class="header-titulo">
+                <h1>SAFIRA</h1>
+                <p>Sistema de Gestão Integrado</p>
+            </div>
+            <div class="header-acoes">
+                <button class="btn btn-secondary btn-small" onclick="mostrarSucesso('Sistema Online ✅')">
+                    Status: Online
+                </button>
+            </div>
+        </header>
+
+        <!-- CONTAINER PRINCIPAL -->
+        <div class="container">
+            <!-- SEÇÃO DE BEM-VINDO -->
+            <div class="card">
+                <h2 style="color: var(--azul-royal); margin-bottom: 10px;">
+                    Bem-vindo ao SAFIRA! 👋
+                </h2>
+                <p style="color: #666; line-height: 1.6;">
+                    Sistema integrado para gerenciar estoque, vendas, serviços técnicos, 
+                    clientes e financeiro da sua loja. Acesse os módulos através do menu lateral 
+                    ou clique nos cards abaixo.
+                </p>
+            </div>
+
+            <!-- GRID DE MÓDULOS -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; margin-top: 30px;">
+                
+                <!-- ESTOQUE -->
+                <div class="card" style="cursor: pointer; transition: all 0.3s;" 
+                     onmouseover="this.style.transform='translateY(-5px)'" 
+                     onmouseout="this.style.transform='translateY(0)'"
+                     onclick="window.location.href='modulos/estoque.html'">
+                    <div style="text-align: center; margin-bottom: 15px;">
+                        <div style="font-size: 50px; margin-bottom: 10px;">📦</div>
+                        <h3 style="color: var(--azul-royal); margin-bottom: 5px;">Estoque</h3>
+                        <p style="font-size: 12px; color: #999;">Gerenciar produtos</p>
+                    </div>
+                    <div style="text-align: center;">
+                        <span class="badge badge-success">✅ Ativo</span>
+                    </div>
+                </div>
+
+                <!-- CLIENTES -->
+                <div class="card" style="cursor: pointer; transition: all 0.3s;" 
+                     onmouseover="this.style.transform='translateY(-5px)'" 
+                     onmouseout="this.style.transform='translateY(0)'"
+                     onclick="window.location.href='modulos/clientes.html'">
+                    <div style="text-align: center; margin-bottom: 15px;">
+                        <div style="font-size: 50px; margin-bottom: 10px;">👥</div>
+                        <h3 style="color: var(--azul-royal); margin-bottom: 5px;">Clientes</h3>
+                        <p style="font-size: 12px; color: #999;">Cadastro e histórico</p>
+                    </div>
+                    <div style="text-align: center;">
+                        <span class="badge badge-success">✅ Ativo</span>
+                    </div>
+                </div>
+
+                <!-- VENDAS -->
+                <div class="card" style="cursor: pointer; transition: all 0.3s;" 
+                     onmouseover="this.style.transform='translateY(-5px)'" 
+                     onmouseout="this.style.transform='translateY(0)'"
+                     onclick="window.location.href='modulos/vendas.html'">
+                    <div style="text-align: center; margin-bottom: 15px;">
+                        <div style="font-size: 50px; margin-bottom: 10px;">🛒</div>
+                        <h3 style="color: var(--azul-royal); margin-bottom: 5px;">Vendas</h3>
+                        <p style="font-size: 12px; color: #999;">Ordem de venda</p>
+                    </div>
+                    <div style="text-align: center;">
+                        <span class="badge badge-success">✅ Ativo</span>
+                    </div>
+                </div>
+
+                <!-- SERVIÇOS -->
+                <div class="card" style="cursor: pointer; transition: all 0.3s;" 
+                     onmouseover="this.style.transform='translateY(-5px)'" 
+                     onmouseout="this.style.transform='translateY(0)'"
+                     onclick="window.location.href='modulos/servicos.html'">
+                    <div style="text-align: center; margin-bottom: 15px;">
+                        <div style="font-size: 50px; margin-bottom: 10px;">🔧</div>
+                        <h3 style="color: var(--azul-royal); margin-bottom: 5px;">Serviços</h3>
+                        <p style="font-size: 12px; color: #999;">Técnico e manutenção</p>
+                    </div>
+                    <div style="text-align: center;">
+                        <span class="badge badge-success">✅ Ativo</span>
+                    </div>
+                </div>
+
+                <!-- FINANCEIRO -->
+                <div class="card" style="cursor: pointer; transition: all 0.3s;" 
+                     onmouseover="this.style.transform='translateY(-5px)'" 
+                     onmouseout="this.style.transform='translateY(0)'"
+                     onclick="window.location.href='modulos/financeiro.html'">
+                    <div style="text-align: center; margin-bottom: 15px;">
+                        <div style="font-size: 50px; margin-bottom: 10px;">💰</div>
+                        <h3 style="color: var(--azul-royal); margin-bottom: 5px;">Financeiro</h3>
+                        <p style="font-size: 12px; color: #999;">Receitas e despesas</p>
+                    </div>
+                    <div style="text-align: center;">
+                        <span class="badge badge-success">✅ Ativo</span>
+                    </div>
+                </div>
+
+                <!-- RELATÓRIOS -->
+                <div class="card" style="cursor: pointer; transition: all 0.3s;" 
+                     onmouseover="this.style.transform='translateY(-5px)'" 
+                     onmouseout="this.style.transform='translateY(0)'"
+                     onclick="window.location.href='modulos/relatorios.html'">
+                    <div style="text-align: center; margin-bottom: 15px;">
+                        <div style="font-size: 50px; margin-bottom: 10px;">📊</div>
+                        <h3 style="color: var(--azul-royal); margin-bottom: 5px;">Relatórios</h3>
+                        <p style="font-size: 12px; color: #999;">Análises e gráficos</p>
+                    </div>
+                    <div style="text-align: center;">
+                        <span class="badge badge-success">✅ Ativo</span>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- SEÇÃO DE INFO -->
+            <div class="card" style="margin-top: 30px;">
+                <h3 style="color: var(--azul-royal); margin-bottom: 15px;">
+                    ℹ️ Informações do Sistema
+                </h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px;">
+                    <div>
+                        <strong style="color: var(--azul-royal);">Versão:</strong>
+                        <p style="color: #666; margin-top: 5px;">1.0.0</p>
+                    </div>
+                    <div>
+                        <strong style="color: var(--azul-royal);">Status:</strong>
+                        <p style="color: var(--verde); margin-top: 5px;">🟢 Online</p>
+                    </div>
+                    <div>
+                        <strong style="color: var(--azul-royal);">Banco de Dados:</strong>
+                        <p style="color: #666; margin-top: 5px;">Google Sheets</p>
+                    </div>
+                    <div>
+                        <strong style="color: var(--azul-royal);">Hostagem:</strong>
+                        <p style="color: #666; margin-top: 5px;">GitHub Pages</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- SCRIPTS -->
+    <script src="js/config.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/api.js"></script>
+
+    <script>
+        // Marcar link ativo no sidebar
+        document.addEventListener('DOMContentLoaded', function() {
+            const links = document.querySelectorAll('.sidebar-menu a');
+            const currentPage = window.location.pathname;
+            
+            links.forEach(link => {
+                if (link.getAttribute('href') === currentPage || 
+                    (currentPage.includes('index.html') && link.getAttribute('href') === 'index.html')) {
+                    link.classList.add('ativo');
+                } else {
+                    link.classList.remove('ativo');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
