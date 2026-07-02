@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SAFIRA - Estoque</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="sidebar-logo">◆ SAFIRA</div>
+        <div class="sidebar-subtitle">Do Alvorecer</div>
+        
+        <ul class="sidebar-menu">
+            <li>
+                <a href="../index.html">
+                    <span>🏠</span>
+                    Home
+                </a>
+            </li>
+            <li>
+                <a href="estoque.html" class="ativo">
+                    <span>📦</span>
+                    Estoque
+                </a>
+            </li>
+            <li>
+                <a href="clientes.html">
+                    <span>👥</span>
+                    Clientes
+                </a>
+            </li>
+            <li>
+                <a href="vendas.html">
+                    <span>🛒</span>
+                    Vendas
+                </a>
+            </li>
+            <li>
+                <a href="servicos.html">
+                    <span>🔧</span>
+                    Serviços
+                </a>
+            </li>
+            <li>
+                <a href="financeiro.html">
+                    <span>💰</span>
+                    Financeiro
+                </a>
+            </li>
+            <li>
+                <a href="relatorios.html">
+                    <span>📊</span>
+                    Relatórios
+                </a>
+            </li>
+        </ul>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+        <!-- HEADER -->
+        <header class="header">
+            <div class="header-titulo">
+                <h1>📦 Estoque</h1>
+                <p>Gestão de produtos</p>
+            </div>
+            <div class="header-acoes">
+                <button class="btn btn-primary btn-small" onclick="abrirModalAdicionar()">
+                    ➕ Novo Produto
+                </button>
+            </div>
+        </header>
+
+        <!-- CONTAINER PRINCIPAL -->
+        <div class="container">
+            <!-- CARDS DE ESTATÍSTICAS -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px;">
+                <div class="stat-card">
+                    <div class="stat-icon">📦</div>
+                    <div class="stat-label">Total de Produtos</div>
+                    <div class="stat-value" id="totalProdutos">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">📊</div>
+                    <div class="stat-label">Valor Total em Estoque</div>
+                    <div class="stat-value" id="valorTotal">R$ 0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">⚠️</div>
+                    <div class="stat-label">Produtos com Baixo Estoque</div>
+                    <div class="stat-value" id="baixoEstoque">0</div>
+                </div>
+            </div>
+
+            <!-- FILTROS -->
+            <div class="card">
+                <h3 class="card-titulo">🔍 Filtrar Produtos</h3>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Buscar por Nome/Marca</label>
+                        <input type="text" id="buscaNome" placeholder="Digite aqui..." 
+                               onkeyup="filtrarTabela()">
+                    </div>
+                    <div class="form-group">
+                        <label>Marca</label>
+                        <select id="filtroMarca" onchange="filtrarTabela()">
+                            <option value="">Todas as marcas</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Ordenar por</label>
+                        <select id="ordenar" onchange="filtrarTabela()">
+                            <option value="nome">Nome</option>
+                            <option value="preco">Preço</option>
+                            <option value="estoque">Quantidade</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TABELA DE PRODUTOS -->
+            <div class="tabela-container" style="margin-top: 30px;">
+                <table id="tabelaProdutos">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Produto</th>
+                            <th>Marca</th>
+                            <th>Preço Custo</th>
+                            <th>Preço Venda</th>
+                            <th>Quantidade</th>
+                            <th>Lucro</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody">
+                        <tr>
+                            <td colspan="8" style="text-align: center; padding: 40px;">
+                                <div class="loading">
+                                    <div class="spinner"></div>
+                                    <p>Carregando produtos...</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- MODAL ADICIONAR PRODUTO -->
+    <div class="modal" id="modalAdicionar">
+        <div class="modal-content">
+            <button class="modal-close" onclick="fecharModalAdicionar()">✕</button>
+            <div class="modal-header">➕ Novo Produto</div>
+            
+            <div class="modal-body">
+                <form id="formProduto">
+                    <div class="form-group">
+                        <label>Nome do Produto *</label>
+                        <input type="text" name="nome" required>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Marca *</label>
+                            <input type="text" name="marca" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Modelo *</label>
+                            <input type="text" name="modelo" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Cor</label>
+                            <input type="text" name="cor">
+                        </div>
+                        <div class="form-group">
+                            <label>Preço Custo *</label>
+                            <input type="number" name="preco_custo" step="0.01" min="0" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Preço Venda *</label>
+                            <input type="number" name="preco_venda" step="0.01" min="0" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Quantidade *</label>
+                            <input type="number" name="estoque" min="1" value="1" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Descrição</label>
+                        <textarea name="descricao"></textarea>
+                    </div>
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="fecharModalAdicionar()">Cancelar</button>
+                <button class="btn btn-primary" onclick="salvarProduto()">Salvar Produto</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCRIPTS -->
+    <script src="../js/config.js"></script>
+    <script src="../js/utils.js"></script>
+    <script src="../js/api.js"></script>
+
+    <script>
+        let todosProdutos = [];
+
+        // Carregar produtos ao abrir a página
+        document.addEventListener('DOMContentLoaded', function() {
+            carregarProdutos();
+        });
+
+        async function carregarProdutos() {
+            const produtos = await listarEstoque();
+            todosProdutos = produtos;
+            
+            preencherTabela(produtos);
+            carregarMarcas();
+            atualizarEstatisticas(produtos);
+        }
+
+        function preencherTabela(produtos) {
+            const tbody = document.getElementById('tbody');
+            
+            if (produtos.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="8" style="text-align: center; padding: 40px;">
+                            <p style="color: #999;">Nenhum produto cadastrado</p>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = produtos.map((p, index) => {
+                const custo = parseFloat(p[5]) || 0;
+                const venda = parseFloat(p[6]) || 0;
+                const lucro = custo > 0 ? ((venda - custo) / custo * 100).toFixed(1) : 0;
+                const valorEstoque = venda * parseInt(p[7]);
+
+                return `
+                    <tr>
+                        <td>${p[0]}</td>
+                        <td><strong>${p[1]}</strong></td>
+                        <td>${p[2] || '-'}</td>
+                        <td>${formatarMoeda(custo)}</td>
+                        <td>${formatarMoeda(venda)}</td>
+                        <td>
+                            ${p[7] <= 5 ? `<span class="badge badge-danger">${p[7]}</span>` : p[7]}
+                        </td>
+                        <td>
+                            <strong style="color: ${lucro > 50 ? 'var(--verde)' : 'var(--vermelho)'}">
+                                ${lucro}%
+                            </strong>
+                        </td>
+                        <td>
+                            <button class="btn btn-secondary btn-small" 
+                                    onclick="editarProduto(${index})">✏️</button>
+                            <button class="btn btn-danger btn-small" 
+                                    onclick="deletarProduto(${index})">🗑️</button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function carregarMarcas() {
+            const marcas = [...new Set(todosProdutos.map(p => p[2]).filter(m => m))];
+            const select = document.getElementById('filtroMarca');
+            
+            marcas.forEach(marca => {
+                const option = document.createElement('option');
+                option.value = marca;
+                option.textContent = marca;
+                select.appendChild(option);
+            });
+        }
+
+        function atualizarEstatisticas(produtos) {
+            const total = produtos.length;
+            const valorTotal = produtos.reduce((sum, p) => sum + (parseFloat(p[6]) * parseInt(p[7])), 0);
+            const baixo = produtos.filter(p => parseInt(p[7]) <= 5).length;
+
+            document.getElementById('totalProdutos').textContent = total;
+            document.getElementById('valorTotal').textContent = formatarMoeda(valorTotal);
+            document.getElementById('baixoEstoque').textContent = baixo;
+        }
+
+        function filtrarTabela() {
+            const busca = document.getElementById('buscaNome').value.toLowerCase();
+            const marca = document.getElementById('filtroMarca').value;
+
+            let filtrado = todosProdutos.filter(p => {
+                const matchBusca = !busca || p[1].toLowerCase().includes(busca) || p[2].toLowerCase().includes(busca);
+                const matchMarca = !marca || p[2] === marca;
+                return matchBusca && matchMarca;
+            });
+
+            preencherTabela(filtrado);
+            atualizarEstatisticas(filtrado);
+        }
+
+        function abrirModalAdicionar() {
+            document.getElementById('modalAdicionar').classList.add('show');
+            document.getElementById('formProduto').reset();
+        }
+
+        function fecharModalAdicionar() {
+            document.getElementById('modalAdicionar').classList.remove('show');
+        }
+
+        async function salvarProduto() {
+            const form = document.getElementById('formProduto');
+            const dados = new FormData(form);
+            
+            const payload = {
+                nome: dados.get('nome'),
+                marca: dados.get('marca'),
+                modelo: dados.get('modelo'),
+                cor: dados.get('cor'),
+                preco_custo: dados.get('preco_custo'),
+                preco_venda: dados.get('preco_venda'),
+                estoque: dados.get('estoque'),
+                descricao: dados.get('descricao')
+            };
+
+            const resultado = await salvarProduto(payload);
+
+            if (resultado.status === 'sucesso') {
+                mostrarSucesso('Produto salvo com sucesso! ✅');
+                fecharModalAdicionar();
+                setTimeout(() => carregarProdutos(), 1000);
+            } else {
+                mostrarErro('Erro ao salvar produto: ' + resultado.mensagem);
+            }
+        }
+
+        function editarProduto(index) {
+            mostrarAviso('Edição em desenvolvimento 🚧');
+        }
+
+        function deletarProduto(index) {
+            if (confirm('Tem certeza que deseja deletar este produto?')) {
+                mostrarSucesso('Produto deletado! (Ainda não implementado)');
+            }
+        }
+
+        // Fechar modal ao clicar fora
+        window.onclick = function(event) {
+            const modal = document.getElementById('modalAdicionar');
+            if (event.target === modal) {
+                fecharModalAdicionar();
+            }
+        }
+    </script>
+
+    <style>
+        .modal.show {
+            display: flex;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: var(--branco);
+            border-radius: 12px;
+            padding: 30px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</body>
+</html>
