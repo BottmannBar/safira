@@ -1,7 +1,6 @@
 // ================================
 // SAFIRA - API Functions
 // ================================
-
 /**
  * Fazer requisição GET para listar dados
  * @param {string} acao - Ação a executar (listar-estoque, listar-clientes, etc)
@@ -24,7 +23,6 @@ async function apiGet(acao) {
     return [];
   }
 }
-
 /**
  * Fazer requisição POST para salvar dados
  * @param {string} modulo - Módulo (estoque, clientes, etc)
@@ -38,7 +36,6 @@ async function apiPost(modulo, dados) {
       senha: CONFIG.SENHA,
       ...dados
     };
-
     const response = await fetch(CONFIG.API_URL, {
       method: 'POST',
       headers: {
@@ -46,7 +43,6 @@ async function apiPost(modulo, dados) {
       },
       body: JSON.stringify(payload)
     });
-
     const data = await response.json();
     return data;
   } catch (error) {
@@ -54,52 +50,52 @@ async function apiPost(modulo, dados) {
     return { status: 'erro', mensagem: error.message };
   }
 }
-
 // ================================
 // FUNÇÕES POR MÓDULO
 // ================================
-
 // ESTOQUE
 async function listarEstoque() {
   return await apiGet('listar-estoque');
 }
-
 async function salvarProduto(dados) {
   return await apiPost('estoque', dados);
 }
-
+/**
+ * Atualizar um produto já existente no estoque.
+ * O backend (Google Apps Script) precisa reconhecer a ação 'estoque-editar'
+ * e localizar a linha pelo id para sobrescrever os dados.
+ * @param {string|number} id - ID do produto a atualizar
+ * @param {object} dados - Novos dados do produto
+ * @returns {Promise} Resposta da API
+ */
+async function atualizarProduto(id, dados) {
+  return await apiPost('estoque-editar', { id, ...dados });
+}
 // CLIENTES
 async function listarClientes() {
   return await apiGet('listar-clientes');
 }
-
 async function salvarCliente(dados) {
   return await apiPost('clientes', dados);
 }
-
 // VENDAS
 async function listarVendas() {
   return await apiGet('listar-vendas');
 }
-
 async function salvarVenda(dados) {
   return await apiPost('vendas', dados);
 }
-
 // SERVIÇOS
 async function listarServicos() {
   return await apiGet('listar-servicos');
 }
-
 async function salvarServico(dados) {
   return await apiPost('servicos', dados);
 }
-
 // FINANCEIRO
 async function listarFinanceiro() {
   return await apiGet('listar-financeiro');
 }
-
 async function salvarFinanceiro(dados) {
   return await apiPost('financeiro', dados);
 }
