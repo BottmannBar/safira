@@ -4,7 +4,7 @@
 
 const CONFIG = {
   // 🔗 IMPORTANTE: Substitua pela URL do seu Google Apps Script
-  API_URL: 'https://script.google.com/macros/d/SEU_ID_AQUI/userweb',
+  API_URL: 'https://script.google.com/macros/s/AKfycbxLji6TUHczkizooRbwVOX5YwcUGmrH-nOtc8RjJqRwshzoBcLdnNlSAfA0z31oOFjb2g/exec',
   
   // 🔐 Senha de acesso (mude isso!)
   SENHA: 'SAFIRA_2026',
