@@ -39,7 +39,7 @@ async function apiPost(modulo, dados) {
     const response = await fetch(CONFIG.API_URL, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'text/plain;charset=utf-8'
       },
       body: JSON.stringify(payload)
     });
