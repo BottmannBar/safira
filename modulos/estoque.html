@@ -207,7 +207,7 @@
 
             <div class="modal-footer">
                 <button class="btn btn-secondary" onclick="fecharModalAdicionar()">Cancelar</button>
-                <button class="btn btn-primary" onclick="salvarProduto()">Salvar Produto</button>
+                <button class="btn btn-primary" onclick="handleSalvarProduto()">Salvar Produto</button>
             </div>
         </div>
     </div>
@@ -325,7 +325,7 @@
             document.getElementById('modalAdicionar').classList.remove('show');
         }
 
-        async function salvarProduto() {
+        async function handleSalvarProduto() {
             const form = document.getElementById('formProduto');
             const dados = new FormData(form);
             
@@ -410,6 +410,5 @@
             }
         }
     </style>
-</main>
 </body>
 </html>
