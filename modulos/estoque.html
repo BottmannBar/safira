@@ -79,13 +79,18 @@
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px;">
                 <div class="stat-card">
                     <div class="stat-icon">📦</div>
-                    <div class="stat-label">Total de Produtos</div>
+                    <div class="stat-label">Total Ativos</div>
                     <div class="stat-value" id="totalProdutos">0</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-icon">📊</div>
                     <div class="stat-label">Valor Total em Estoque</div>
                     <div class="stat-value" id="valorTotalEstoque">R$ 0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">💵</div>
+                    <div class="stat-label">Custo Total</div>
+                    <div class="stat-value" id="custoTotalEstoque">R$ 0</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-icon">⚠️</div>
@@ -119,6 +124,39 @@
                         </select>
                     </div>
                 </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Ano (Data de Entrada)</label>
+                        <select id="filtroAno" onchange="filtrarTabela()">
+                            <option value="">Todos os anos</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Mês (Data de Entrada)</label>
+                        <select id="filtroMes" onchange="filtrarTabela()">
+                            <option value="">Todos os meses</option>
+                            <option value="01">Janeiro</option>
+                            <option value="02">Fevereiro</option>
+                            <option value="03">Março</option>
+                            <option value="04">Abril</option>
+                            <option value="05">Maio</option>
+                            <option value="06">Junho</option>
+                            <option value="07">Julho</option>
+                            <option value="08">Agosto</option>
+                            <option value="09">Setembro</option>
+                            <option value="10">Outubro</option>
+                            <option value="11">Novembro</option>
+                            <option value="12">Dezembro</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Dia (Data de Entrada)</label>
+                        <select id="filtroDia" onchange="filtrarTabela()">
+                            <option value="">Todos os dias</option>
+                        </select>
+                    </div>
+                </div>
             </div>
 
             <!-- TABELA DE PRODUTOS -->
@@ -134,12 +172,13 @@
                             <th>Valor Venda</th>
                             <th>Quantidade</th>
                             <th>Lucro</th>
+                            <th>Status</th>
                             <th>Ações</th>
                         </tr>
                     </thead>
                     <tbody id="tbody">
                         <tr>
-                            <td colspan="9" style="text-align: center; padding: 40px;">
+                            <td colspan="10" style="text-align: center; padding: 40px;">
                                 <div class="loading">
                                     <div class="spinner"></div>
                                     <p>Carregando produtos...</p>
@@ -157,7 +196,7 @@
     <div class="modal" id="modalAdicionar">
         <div class="modal-content modal-content-lg">
             <button class="modal-close" onclick="fecharModalAdicionar()">✕</button>
-            <div class="modal-header">➕ Novo Produto</div>
+            <div class="modal-header" id="modalProdutoTitulo">➕ Novo Produto</div>
 
             <div class="modal-body">
                 <div class="info-box">
@@ -362,6 +401,7 @@
 
     <script>
         let todosProdutos = [];
+        let produtoEmEdicaoIndex = null;
 
         // Carregar produtos ao abrir a página
         document.addEventListener('DOMContentLoaded', function() {
@@ -375,6 +415,7 @@
 
             preencherTabela(produtos);
             carregarMarcas();
+            carregarFiltrosData();
             atualizarEstatisticas(produtos);
         }
 
@@ -384,7 +425,7 @@
             if (produtos.length === 0) {
                 tbody.innerHTML = `
                     <tr>
-                        <td colspan="9" style="text-align: center; padding: 40px;">
+                        <td colspan="10" style="text-align: center; padding: 40px;">
                             <p style="color: #999;">Nenhum produto cadastrado</p>
                         </td>
                     </tr>
@@ -393,20 +434,27 @@
             }
 
             // Ordem esperada vinda da planilha (ajuste os índices se a ordem das colunas mudar):
-            // p[0]=ID, p[1]=nomeReferencia, p[2]=marca, p[3]=condicao,
-            // p[4]=custUnitario, p[5]=valorVenda, p[6]=quantidade, p[7]=lucroBruto
+            // p[0]=id, p[1]=nomeReferencia, p[2]=marca, p[3]=modelo, p[4]=cor,
+            // p[5]=condicao, p[6]=especificacao, p[7]=tipoCodig, p[8]=codigo,
+            // p[9]=dataEntrada, p[10]=custUnitario, p[11]=margem, p[12]=quantidade,
+            // p[13]=custoTotal, p[14]=valorUnitario, p[15]=valorTotal, p[16]=valorVenda,
+            // p[17]=valorLiquido, p[18]=lucroBruto, p[19]=observacoes, p[20]=status
             tbody.innerHTML = produtos.map((p, index) => {
-                const custo = parseFloat(p[4]) || 0;
-                const venda = parseFloat(p[5]) || 0;
-                const qtd = parseInt(p[6]) || 0;
-                const lucro = parseFloat(p[7]) || 0;
+                const custo = parseFloat(p[10]) || 0;
+                const venda = parseFloat(p[16]) || 0;
+                const qtd = parseInt(p[12]) || 0;
+                const lucro = parseFloat(p[18]) || 0;
+                const status = p[20] || 'Disponível';
+                const statusBadge = status === 'Vendido'
+                    ? `<span class="badge badge-primary">Vendido</span>`
+                    : `<span class="badge badge-success">Disponível</span>`;
 
                 return `
                     <tr>
                         <td>${p[0]}</td>
                         <td><strong>${p[1]}</strong></td>
                         <td>${p[2] || '-'}</td>
-                        <td>${p[3] || '-'}</td>
+                        <td>${p[5] || '-'}</td>
                         <td>${formatarMoeda(custo)}</td>
                         <td>${formatarMoeda(venda)}</td>
                         <td>
@@ -415,6 +463,7 @@
                         <td>
                             <strong style="color: var(--verde)">${formatarMoeda(lucro)}</strong>
                         </td>
+                        <td>${statusBadge}</td>
                         <td>
                             <button class="btn btn-secondary btn-small"
                                     onclick="editarProduto(${index})">✏️</button>
@@ -439,24 +488,71 @@
             });
         }
 
+        function carregarFiltrosData() {
+            // Ano: baseado nas datas de entrada existentes
+            const anos = [...new Set(
+                todosProdutos
+                    .map(p => (p[9] || '').substring(0, 4))
+                    .filter(a => a && a.length === 4)
+            )].sort((a, b) => b - a);
+
+            const selectAno = document.getElementById('filtroAno');
+            const anoSelecionado = selectAno.value;
+            selectAno.innerHTML = '<option value="">Todos os anos</option>';
+            anos.forEach(ano => {
+                const option = document.createElement('option');
+                option.value = ano;
+                option.textContent = ano;
+                selectAno.appendChild(option);
+            });
+            selectAno.value = anoSelecionado;
+
+            // Dia: 01 a 31 (fixo)
+            const selectDia = document.getElementById('filtroDia');
+            if (selectDia.options.length <= 1) {
+                for (let d = 1; d <= 31; d++) {
+                    const dd = String(d).padStart(2, '0');
+                    const option = document.createElement('option');
+                    option.value = dd;
+                    option.textContent = dd;
+                    selectDia.appendChild(option);
+                }
+            }
+        }
+
         function atualizarEstatisticas(produtos) {
-            const total = produtos.length;
-            const valorTotal = produtos.reduce((sum, p) => sum + ((parseFloat(p[5]) || 0) * (parseInt(p[6]) || 0)), 0);
-            const baixo = produtos.filter(p => (parseInt(p[6]) || 0) <= 5).length;
+            const ativos = produtos.filter(p => (p[20] || 'Disponível') !== 'Vendido');
+
+            const total = ativos.length;
+            const valorTotal = ativos.reduce((sum, p) => sum + ((parseFloat(p[16]) || 0) * (parseInt(p[12]) || 0)), 0);
+            const custoTotal = ativos.reduce((sum, p) => sum + ((parseFloat(p[10]) || 0) * (parseInt(p[12]) || 0)), 0);
+            const baixo = ativos.filter(p => (parseInt(p[12]) || 0) <= 5).length;
 
             document.getElementById('totalProdutos').textContent = total;
             document.getElementById('valorTotalEstoque').textContent = formatarMoeda(valorTotal);
+            document.getElementById('custoTotalEstoque').textContent = formatarMoeda(custoTotal);
             document.getElementById('baixoEstoque').textContent = baixo;
         }
 
         function filtrarTabela() {
             const busca = document.getElementById('buscaNome').value.toLowerCase();
             const marca = document.getElementById('filtroMarca').value;
+            const ano = document.getElementById('filtroAno').value;
+            const mes = document.getElementById('filtroMes').value;
+            const dia = document.getElementById('filtroDia').value;
 
             let filtrado = todosProdutos.filter(p => {
                 const matchBusca = !busca || (p[1] || '').toLowerCase().includes(busca) || (p[2] || '').toLowerCase().includes(busca);
                 const matchMarca = !marca || p[2] === marca;
-                return matchBusca && matchMarca;
+
+                // dataEntrada no formato YYYY-MM-DD (p[9])
+                const dataEntrada = p[9] || '';
+                const [anoP, mesP, diaP] = dataEntrada.split('-');
+                const matchAno = !ano || anoP === ano;
+                const matchMes = !mes || mesP === mes;
+                const matchDia = !dia || diaP === dia;
+
+                return matchBusca && matchMarca && matchAno && matchMes && matchDia;
             });
 
             preencherTabela(filtrado);
@@ -464,12 +560,45 @@
         }
 
         function abrirModalAdicionar() {
+            produtoEmEdicaoIndex = null;
+            document.getElementById('modalProdutoTitulo').textContent = '➕ Novo Produto';
             document.getElementById('modalAdicionar').classList.add('show');
             document.getElementById('formProduto').reset();
             document.getElementById('imagePreview').innerHTML = '';
             document.getElementById('dataEntrada').value = obterDataHoje();
             calcularValores();
             gerarNomeReferencia();
+        }
+
+        function abrirModalEditar(index) {
+            const p = todosProdutos[index];
+            if (!p) return;
+
+            produtoEmEdicaoIndex = index;
+            document.getElementById('modalProdutoTitulo').textContent = '✏️ Editar Produto';
+
+            document.getElementById('formProduto').reset();
+            document.getElementById('imagePreview').innerHTML = '';
+
+            document.getElementById('marca').value = p[2] || '';
+            document.getElementById('modelo').value = p[3] || '';
+            document.getElementById('cor').value = p[4] || '';
+            document.getElementById('condicao').value = p[5] || '';
+            document.getElementById('especificacao').value = p[6] || '';
+            document.getElementById('tipoCodig').value = p[7] || '';
+            document.getElementById('codigo').value = p[8] || '';
+            document.getElementById('dataEntrada').value = p[9] || obterDataHoje();
+            document.getElementById('custUnitario').value = parseFloat(p[10]) || 0;
+            document.getElementById('margem').value = parseFloat(p[11]) || 100;
+            document.getElementById('quantidade').value = parseInt(p[12]) || 1;
+            document.getElementById('observacoes').value = p[19] || '';
+
+            // Fotos não ficam salvas (só servem de preview no momento do cadastro),
+            // então na edição elas aparecem em branco — se precisar trocar, é só enviar de novo.
+
+            document.getElementById('modalAdicionar').classList.add('show');
+            gerarNomeReferencia();
+            calcularValores();
         }
 
         function fecharModalAdicionar() {
@@ -627,10 +756,23 @@
                 observacoes: document.getElementById('observacoes').value
             };
 
-            const resultado = await salvarProduto(payload);
+            let resultado;
+
+            if (produtoEmEdicaoIndex !== null) {
+                // Modo edição: mantém o status que o produto já tinha (Disponível/Vendido)
+                const produtoAtual = todosProdutos[produtoEmEdicaoIndex];
+                const id = produtoAtual[0];
+                payload.status = produtoAtual[20] || 'Disponível';
+                resultado = await atualizarProduto(id, payload);
+            } else {
+                // Modo criação: todo produto novo entra como Disponível;
+                // vira "Vendido" lá no módulo de Vendas (ainda não implementado)
+                payload.status = 'Disponível';
+                resultado = await salvarProduto(payload);
+            }
 
             if (resultado.status === 'sucesso') {
-                mostrarSucesso('Produto salvo com sucesso! ✅');
+                mostrarSucesso(produtoEmEdicaoIndex !== null ? 'Produto atualizado com sucesso! ✅' : 'Produto salvo com sucesso! ✅');
                 fecharModalAdicionar();
                 setTimeout(() => carregarProdutos(), 1000);
             } else {
@@ -639,7 +781,7 @@
         }
 
         function editarProduto(index) {
-            mostrarAviso('Edição em desenvolvimento 🚧');
+            abrirModalEditar(index);
         }
 
         function deletarProduto(index) {
