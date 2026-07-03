@@ -11,7 +11,7 @@
     <aside class="sidebar">
         <div class="sidebar-logo">◆ SAFIRA</div>
         <div class="sidebar-subtitle">Do Alvorecer</div>
-        
+
         <ul class="sidebar-menu">
             <li>
                 <a href="../index.html">
@@ -85,7 +85,7 @@
                 <div class="stat-card">
                     <div class="stat-icon">📊</div>
                     <div class="stat-label">Valor Total em Estoque</div>
-                    <div class="stat-value" id="valorTotal">R$ 0</div>
+                    <div class="stat-value" id="valorTotalEstoque">R$ 0</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-icon">⚠️</div>
@@ -97,11 +97,11 @@
             <!-- FILTROS -->
             <div class="card">
                 <h3 class="card-titulo">🔍 Filtrar Produtos</h3>
-                
+
                 <div class="form-row">
                     <div class="form-group">
                         <label>Buscar por Nome/Marca</label>
-                        <input type="text" id="buscaNome" placeholder="Digite aqui..." 
+                        <input type="text" id="buscaNome" placeholder="Digite aqui..."
                                onkeyup="filtrarTabela()">
                     </div>
                     <div class="form-group">
@@ -127,10 +127,11 @@
                     <thead>
                         <tr>
                             <th>ID</th>
-                            <th>Produto</th>
+                            <th>Nome de Referência</th>
                             <th>Marca</th>
-                            <th>Preço Custo</th>
-                            <th>Preço Venda</th>
+                            <th>Condição</th>
+                            <th>Custo Unit.</th>
+                            <th>Valor Venda</th>
                             <th>Quantidade</th>
                             <th>Lucro</th>
                             <th>Ações</th>
@@ -138,7 +139,7 @@
                     </thead>
                     <tbody id="tbody">
                         <tr>
-                            <td colspan="8" style="text-align: center; padding: 40px;">
+                            <td colspan="9" style="text-align: center; padding: 40px;">
                                 <div class="loading">
                                     <div class="spinner"></div>
                                     <p>Carregando produtos...</p>
@@ -154,53 +155,195 @@
 
     <!-- MODAL ADICIONAR PRODUTO -->
     <div class="modal" id="modalAdicionar">
-        <div class="modal-content">
+        <div class="modal-content modal-content-lg">
             <button class="modal-close" onclick="fecharModalAdicionar()">✕</button>
             <div class="modal-header">➕ Novo Produto</div>
-            
+
             <div class="modal-body">
+                <div class="info-box">
+                    📦 Registre um novo produto no estoque. Campos com * são obrigatórios.
+                </div>
+
+                <div id="formMessage" class="alert" style="display:none;"></div>
+
                 <form id="formProduto">
-                    <div class="form-group">
-                        <label>Nome do Produto *</label>
-                        <input type="text" name="nome" required>
+                    <!-- SEÇÃO 1: PRODUTO -->
+                    <div class="form-section">
+                        <div class="section-title">📦 Informações do Produto</div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="marca">Marca *</label>
+                                <select id="marca" name="marca" required>
+                                    <option value="">Selecione...</option>
+                                    <option value="Apple">Apple</option>
+                                    <option value="Samsung">Samsung</option>
+                                    <option value="Xiaomi">Xiaomi</option>
+                                    <option value="Motorola">Motorola</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="modelo">Modelo *</label>
+                                <input type="text" id="modelo" name="modelo" placeholder="iPhone 11" required>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="cor">Cor *</label>
+                                <select id="cor" name="cor" required>
+                                    <option value="">Selecione...</option>
+                                    <option value="Branco">Branco</option>
+                                    <option value="Preto">Preto</option>
+                                    <option value="Cinza">Cinza</option>
+                                    <option value="Azul">Azul</option>
+                                    <option value="Vermelho">Vermelho</option>
+                                    <option value="Dourado">Dourado</option>
+                                    <option value="Rosa">Rosa</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="condicao">Condição *</label>
+                                <select id="condicao" name="condicao" required>
+                                    <option value="">Selecione...</option>
+                                    <option value="Novo">Novo</option>
+                                    <option value="Seminovo">Seminovo</option>
+                                    <option value="Usado">Usado</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group full">
+                                <label for="especificacao">Especificação *</label>
+                                <input type="text" id="especificacao" name="especificacao" placeholder="128GB-86%" required>
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>Marca *</label>
-                            <input type="text" name="marca" required>
+                    <!-- SEÇÃO 2: IDENTIFICAÇÃO -->
+                    <div class="form-section">
+                        <div class="section-title">🔢 Identificação</div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="tipoCodig">Tipo de Código *</label>
+                                <select id="tipoCodig" name="tipoCodig" required>
+                                    <option value="">Selecione...</option>
+                                    <option value="IMEI">IMEI</option>
+                                    <option value="CODIGO_SERIE">Código de Série</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="codigo">Código *</label>
+                                <input type="text" id="codigo" name="codigo" placeholder="Apenas números" required>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label>Modelo *</label>
-                            <input type="text" name="modelo" required>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="dataEntrada">Data de Entrada *</label>
+                                <input type="date" id="dataEntrada" name="dataEntrada" required>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group full">
+                                <label>📌 Nome de Referência</label>
+                                <div class="calculated-field" id="nomeReferencia">
+                                    Marca - Modelo - Cor - Especificação
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>Cor</label>
-                            <input type="text" name="cor">
+                    <!-- SEÇÃO 3: FOTOS -->
+                    <div class="form-section">
+                        <div class="section-title">📸 Fotos do Produto</div>
+
+                        <div class="form-row">
+                            <div class="form-group full">
+                                <label for="fotoFrente">Foto Frente *</label>
+                                <input type="file" id="fotoFrente" name="fotoFrente" accept="image/*" required>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label>Preço Custo *</label>
-                            <input type="number" name="preco_custo" step="0.01" min="0" required>
+
+                        <div class="form-row">
+                            <div class="form-group full">
+                                <label for="fotoVerso">Foto Verso *</label>
+                                <input type="file" id="fotoVerso" name="fotoVerso" accept="image/*" required>
+                            </div>
+                        </div>
+
+                        <!-- Preview de fotos -->
+                        <div class="image-preview" id="imagePreview"></div>
+                    </div>
+
+                    <!-- SEÇÃO 4: PREÇOS E LUCRO -->
+                    <div class="form-section">
+                        <div class="section-title">💰 Preços e Lucro</div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="custUnitario">Custo Unitário (R$) *</label>
+                                <input type="number" id="custUnitario" name="custUnitario" step="0.01" min="0" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="margem">Margem de Lucro (%)</label>
+                                <input type="number" id="margem" name="margem" step="0.01" min="0" value="100">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="quantidade">Quantidade</label>
+                                <input type="number" id="quantidade" name="quantidade" min="1" value="1">
+                            </div>
+                        </div>
+
+                        <!-- Resumo de Valores Calculados -->
+                        <div class="values-summary">
+                            <div class="value-row">
+                                <span class="value-label">Custo Total:</span>
+                                <span class="value-amount" id="custoTotal">R$ 0,00</span>
+                            </div>
+                            <div class="value-row">
+                                <span class="value-label">Valor Unitário:</span>
+                                <span class="value-amount" id="valorUnitario">R$ 0,00</span>
+                            </div>
+                            <div class="value-row">
+                                <span class="value-label">Valor Total:</span>
+                                <span class="value-amount" id="valorTotalCalc">R$ 0,00</span>
+                            </div>
+                            <div class="value-row">
+                                <span class="value-label">Valor Venda (c/ ICMS 3%):</span>
+                                <span class="value-amount" id="valorVenda">R$ 0,00</span>
+                            </div>
+                            <div class="value-row">
+                                <span class="value-label">Valor Líquido:</span>
+                                <span class="value-amount" id="valorLiquido">R$ 0,00</span>
+                            </div>
+                        </div>
+
+                        <!-- Destaque para Lucro Bruto -->
+                        <div class="lucro-destacado">
+                            <div class="lucro-label">💰 Lucro Bruto</div>
+                            <div class="lucro-valor" id="lucroBruto">R$ 0,00</div>
                         </div>
                     </div>
 
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>Preço Venda *</label>
-                            <input type="number" name="preco_venda" step="0.01" min="0" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Quantidade *</label>
-                            <input type="number" name="estoque" min="1" value="1" required>
-                        </div>
-                    </div>
+                    <!-- SEÇÃO 5: OBSERVAÇÕES -->
+                    <div class="form-section">
+                        <div class="section-title">📝 Observações</div>
 
-                    <div class="form-group">
-                        <label>Descrição</label>
-                        <textarea name="descricao"></textarea>
+                        <div class="form-row">
+                            <div class="form-group full">
+                                <label for="observacoes">Notas adicionais</label>
+                                <textarea id="observacoes" name="observacoes"></textarea>
+                            </div>
+                        </div>
                     </div>
                 </form>
             </div>
@@ -223,12 +366,13 @@
         // Carregar produtos ao abrir a página
         document.addEventListener('DOMContentLoaded', function() {
             carregarProdutos();
+            inicializarFormulario();
         });
 
         async function carregarProdutos() {
             const produtos = await listarEstoque();
             todosProdutos = produtos;
-            
+
             preencherTabela(produtos);
             carregarMarcas();
             atualizarEstatisticas(produtos);
@@ -236,11 +380,11 @@
 
         function preencherTabela(produtos) {
             const tbody = document.getElementById('tbody');
-            
+
             if (produtos.length === 0) {
                 tbody.innerHTML = `
                     <tr>
-                        <td colspan="8" style="text-align: center; padding: 40px;">
+                        <td colspan="9" style="text-align: center; padding: 40px;">
                             <p style="color: #999;">Nenhum produto cadastrado</p>
                         </td>
                     </tr>
@@ -248,31 +392,33 @@
                 return;
             }
 
+            // Ordem esperada vinda da planilha (ajuste os índices se a ordem das colunas mudar):
+            // p[0]=ID, p[1]=nomeReferencia, p[2]=marca, p[3]=condicao,
+            // p[4]=custUnitario, p[5]=valorVenda, p[6]=quantidade, p[7]=lucroBruto
             tbody.innerHTML = produtos.map((p, index) => {
-                const custo = parseFloat(p[5]) || 0;
-                const venda = parseFloat(p[6]) || 0;
-                const lucro = custo > 0 ? ((venda - custo) / custo * 100).toFixed(1) : 0;
-                const valorEstoque = venda * parseInt(p[7]);
+                const custo = parseFloat(p[4]) || 0;
+                const venda = parseFloat(p[5]) || 0;
+                const qtd = parseInt(p[6]) || 0;
+                const lucro = parseFloat(p[7]) || 0;
 
                 return `
                     <tr>
                         <td>${p[0]}</td>
                         <td><strong>${p[1]}</strong></td>
                         <td>${p[2] || '-'}</td>
+                        <td>${p[3] || '-'}</td>
                         <td>${formatarMoeda(custo)}</td>
                         <td>${formatarMoeda(venda)}</td>
                         <td>
-                            ${p[7] <= 5 ? `<span class="badge badge-danger">${p[7]}</span>` : p[7]}
+                            ${qtd <= 5 ? `<span class="badge badge-danger">${qtd}</span>` : qtd}
                         </td>
                         <td>
-                            <strong style="color: ${lucro > 50 ? 'var(--verde)' : 'var(--vermelho)'}">
-                                ${lucro}%
-                            </strong>
+                            <strong style="color: var(--verde)">${formatarMoeda(lucro)}</strong>
                         </td>
                         <td>
-                            <button class="btn btn-secondary btn-small" 
+                            <button class="btn btn-secondary btn-small"
                                     onclick="editarProduto(${index})">✏️</button>
-                            <button class="btn btn-danger btn-small" 
+                            <button class="btn btn-danger btn-small"
                                     onclick="deletarProduto(${index})">🗑️</button>
                         </td>
                     </tr>
@@ -283,7 +429,8 @@
         function carregarMarcas() {
             const marcas = [...new Set(todosProdutos.map(p => p[2]).filter(m => m))];
             const select = document.getElementById('filtroMarca');
-            
+            select.innerHTML = '<option value="">Todas as marcas</option>';
+
             marcas.forEach(marca => {
                 const option = document.createElement('option');
                 option.value = marca;
@@ -294,11 +441,11 @@
 
         function atualizarEstatisticas(produtos) {
             const total = produtos.length;
-            const valorTotal = produtos.reduce((sum, p) => sum + (parseFloat(p[6]) * parseInt(p[7])), 0);
-            const baixo = produtos.filter(p => parseInt(p[7]) <= 5).length;
+            const valorTotal = produtos.reduce((sum, p) => sum + ((parseFloat(p[5]) || 0) * (parseInt(p[6]) || 0)), 0);
+            const baixo = produtos.filter(p => (parseInt(p[6]) || 0) <= 5).length;
 
             document.getElementById('totalProdutos').textContent = total;
-            document.getElementById('valorTotal').textContent = formatarMoeda(valorTotal);
+            document.getElementById('valorTotalEstoque').textContent = formatarMoeda(valorTotal);
             document.getElementById('baixoEstoque').textContent = baixo;
         }
 
@@ -307,7 +454,7 @@
             const marca = document.getElementById('filtroMarca').value;
 
             let filtrado = todosProdutos.filter(p => {
-                const matchBusca = !busca || p[1].toLowerCase().includes(busca) || p[2].toLowerCase().includes(busca);
+                const matchBusca = !busca || (p[1] || '').toLowerCase().includes(busca) || (p[2] || '').toLowerCase().includes(busca);
                 const matchMarca = !marca || p[2] === marca;
                 return matchBusca && matchMarca;
             });
@@ -319,25 +466,165 @@
         function abrirModalAdicionar() {
             document.getElementById('modalAdicionar').classList.add('show');
             document.getElementById('formProduto').reset();
+            document.getElementById('imagePreview').innerHTML = '';
+            document.getElementById('dataEntrada').value = obterDataHoje();
+            calcularValores();
+            gerarNomeReferencia();
         }
 
         function fecharModalAdicionar() {
             document.getElementById('modalAdicionar').classList.remove('show');
         }
 
+        // ================================
+        // Lógica do formulário (nome de referência, fotos, cálculos)
+        // ================================
+
+        function inicializarFormulario() {
+            // Código: apenas números
+            document.getElementById('codigo').addEventListener('input', function(e) {
+                e.target.value = e.target.value.replace(/[^0-9]/g, '');
+            });
+
+            // Nome de referência automático
+            document.getElementById('marca').addEventListener('change', gerarNomeReferencia);
+            document.getElementById('modelo').addEventListener('input', gerarNomeReferencia);
+            document.getElementById('cor').addEventListener('change', gerarNomeReferencia);
+            document.getElementById('especificacao').addEventListener('input', gerarNomeReferencia);
+
+            // Preview de fotos
+            document.getElementById('fotoFrente').addEventListener('change', processarFoto);
+            document.getElementById('fotoVerso').addEventListener('change', processarFoto);
+
+            // Cálculos de valores
+            document.getElementById('custUnitario').addEventListener('input', calcularValores);
+            document.getElementById('margem').addEventListener('input', calcularValores);
+            document.getElementById('quantidade').addEventListener('input', calcularValores);
+
+            document.getElementById('dataEntrada').value = obterDataHoje();
+            calcularValores();
+        }
+
+        function gerarNomeReferencia() {
+            const marca = document.getElementById('marca').value;
+            const modelo = document.getElementById('modelo').value;
+            const cor = document.getElementById('cor').value;
+            const especificacao = document.getElementById('especificacao').value;
+
+            if (!marca || !modelo || !cor || !especificacao) {
+                document.getElementById('nomeReferencia').textContent = 'Preencha todos os campos obrigatórios';
+                return;
+            }
+
+            const nomeRef = `${marca} - ${modelo} - ${cor} - ${especificacao}`;
+            document.getElementById('nomeReferencia').textContent = nomeRef;
+        }
+
+        function processarFoto(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const tipo = event.target.id === 'fotoFrente' ? 'Frente' : 'Verso';
+                    let preview = document.getElementById('imagePreview');
+
+                    let previewItem = preview.querySelector(`[data-tipo="${tipo}"]`);
+                    if (!previewItem) {
+                        previewItem = document.createElement('div');
+                        previewItem.className = 'preview-item';
+                        previewItem.setAttribute('data-tipo', tipo);
+                        preview.appendChild(previewItem);
+                    }
+
+                    previewItem.innerHTML = `
+                        <img src="${e.target.result}" alt="Foto ${tipo}">
+                        <div class="preview-label">Foto ${tipo}</div>
+                        <button type="button" class="remove-btn" onclick="removerFoto('${tipo}')">Remover</button>
+                    `;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function removerFoto(tipo) {
+            if (tipo === 'Frente') {
+                document.getElementById('fotoFrente').value = '';
+            } else {
+                document.getElementById('fotoVerso').value = '';
+            }
+
+            let preview = document.getElementById('imagePreview');
+            let previewItem = preview.querySelector(`[data-tipo="${tipo}"]`);
+            if (previewItem) {
+                previewItem.remove();
+            }
+        }
+
+        function calcularValores() {
+            const custo = parseFloat(document.getElementById('custUnitario').value) || 0;
+            const margem = parseFloat(document.getElementById('margem').value) || 100;
+            const qtd = parseInt(document.getElementById('quantidade').value) || 1;
+
+            const custoTotal = custo * qtd;
+            const valorUnitario = custo * (1 + margem / 100);
+            const valorTotalCalc = valorUnitario * qtd;
+            const lucroBruto = valorTotalCalc - custoTotal;
+            const icms = valorTotalCalc * 0.03;
+            const valorVenda = valorTotalCalc + icms;
+            const valorLiquido = valorVenda - (lucroBruto * 0.06);
+
+            document.getElementById('custoTotal').textContent = formatarMoeda(custoTotal);
+            document.getElementById('valorUnitario').textContent = formatarMoeda(valorUnitario);
+            document.getElementById('valorTotalCalc').textContent = formatarMoeda(valorTotalCalc);
+            document.getElementById('lucroBruto').textContent = formatarMoeda(lucroBruto);
+            document.getElementById('valorVenda').textContent = formatarMoeda(valorVenda);
+            document.getElementById('valorLiquido').textContent = formatarMoeda(valorLiquido);
+        }
+
+        // ================================
+        // Salvar produto (integrado com api.js)
+        // ================================
+
         async function handleSalvarProduto() {
             const form = document.getElementById('formProduto');
-            const dados = new FormData(form);
-            
+
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return;
+            }
+
+            const custo = parseFloat(document.getElementById('custUnitario').value) || 0;
+            const margem = parseFloat(document.getElementById('margem').value) || 100;
+            const qtd = parseInt(document.getElementById('quantidade').value) || 1;
+
+            const custoTotal = custo * qtd;
+            const valorUnitario = custo * (1 + margem / 100);
+            const valorTotalCalc = valorUnitario * qtd;
+            const lucroBruto = valorTotalCalc - custoTotal;
+            const icms = valorTotalCalc * 0.03;
+            const valorVenda = valorTotalCalc + icms;
+            const valorLiquido = valorVenda - (lucroBruto * 0.06);
+
             const payload = {
-                nome: dados.get('nome'),
-                marca: dados.get('marca'),
-                modelo: dados.get('modelo'),
-                cor: dados.get('cor'),
-                preco_custo: dados.get('preco_custo'),
-                preco_venda: dados.get('preco_venda'),
-                estoque: dados.get('estoque'),
-                descricao: dados.get('descricao')
+                nomeReferencia: document.getElementById('nomeReferencia').textContent,
+                marca: document.getElementById('marca').value,
+                modelo: document.getElementById('modelo').value,
+                cor: document.getElementById('cor').value,
+                condicao: document.getElementById('condicao').value,
+                especificacao: document.getElementById('especificacao').value,
+                tipoCodig: document.getElementById('tipoCodig').value,
+                codigo: document.getElementById('codigo').value,
+                dataEntrada: document.getElementById('dataEntrada').value,
+                custUnitario: custo,
+                margem: margem,
+                quantidade: qtd,
+                custoTotal: custoTotal,
+                valorUnitario: valorUnitario,
+                valorTotal: valorTotalCalc,
+                valorVenda: valorVenda,
+                valorLiquido: valorLiquido,
+                lucroBruto: lucroBruto,
+                observacoes: document.getElementById('observacoes').value
             };
 
             const resultado = await salvarProduto(payload);
@@ -397,6 +684,13 @@
             width: 100%;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
             animation: slideUp 0.3s ease;
+            position: relative;
+        }
+
+        .modal-content-lg {
+            max-width: 650px;
+            max-height: 90vh;
+            overflow-y: auto;
         }
 
         @keyframes slideUp {
@@ -407,6 +701,151 @@
             to {
                 opacity: 1;
                 transform: translateY(0);
+            }
+        }
+
+        /* Estilos extras do formulário completo de estoque */
+        .info-box {
+            background: var(--nevoa);
+            border-left: 4px solid var(--azul-royal);
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 6px;
+            font-size: 13px;
+            color: var(--azul-royal);
+        }
+
+        .form-section {
+            margin-bottom: 25px;
+        }
+
+        .section-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--azul-royal);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--nevoa);
+        }
+
+        .form-group.full {
+            grid-column: 1 / -1;
+        }
+
+        .calculated-field {
+            background: var(--cinza-claro);
+            padding: 11px 14px;
+            border-radius: 6px;
+            border: 2px solid #e0e0e0;
+            font-weight: 500;
+            color: var(--azul-royal);
+            display: flex;
+            align-items: center;
+            min-height: 44px;
+            word-break: break-word;
+        }
+
+        .image-preview {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .preview-item {
+            flex: 1;
+            min-width: 150px;
+            background: var(--cinza-claro);
+            border: 2px solid var(--nevoa);
+            border-radius: 8px;
+            padding: 10px;
+            text-align: center;
+            position: relative;
+        }
+
+        .preview-item img {
+            max-width: 100%;
+            max-height: 150px;
+            border-radius: 6px;
+            margin-bottom: 8px;
+        }
+
+        .preview-label {
+            font-size: 11px;
+            color: var(--azul-royal);
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .remove-btn {
+            font-size: 11px;
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 5px;
+        }
+
+        .values-summary {
+            background: linear-gradient(135deg, rgba(30, 63, 163, 0.05) 0%, rgba(124, 198, 240, 0.05) 100%);
+            border: 2px solid var(--nevoa);
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .value-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            font-size: 13px;
+            border-bottom: 1px solid var(--nevoa);
+        }
+
+        .value-row:last-child {
+            border-bottom: none;
+        }
+
+        .value-label {
+            font-weight: 600;
+            color: var(--azul-royal);
+        }
+
+        .value-amount {
+            color: var(--azul-royal);
+            font-weight: 700;
+        }
+
+        .lucro-destacado {
+            background: rgba(40, 167, 69, 0.1);
+            border: 2px solid var(--verde);
+            border-radius: 6px;
+            padding: 15px;
+            margin-top: 15px;
+            text-align: center;
+        }
+
+        .lucro-valor {
+            font-size: 24px;
+            color: var(--verde);
+            font-weight: 700;
+            margin: 5px 0;
+        }
+
+        .lucro-label {
+            font-size: 12px;
+            color: var(--azul-royal);
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        @media (max-width: 600px) {
+            .modal-content-lg {
+                max-width: 95%;
             }
         }
     </style>
